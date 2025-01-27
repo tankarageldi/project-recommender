@@ -1,12 +1,14 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const dotenv = require("dotenv");
-const pg = require("pg");
+import express from "express";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import { Pool } from "pg";
 
 dotenv.config();
 
 const app = express();
-const db = new pg.Pool({
+
+// PostgreSQL connection pool for serverless environments
+const db = new Pool({
   user: process.env.user,
   host: process.env.host,
   database: process.env.name,
@@ -16,6 +18,7 @@ const db = new pg.Pool({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.set("view engine", "ejs");
 
 app.get("/", async (req, res) => {
   res.render("index.ejs");
@@ -25,6 +28,7 @@ app.post("/projects", async (req, res) => {
   try {
     const { language, difficulty, count } = req.body;
 
+    // Query the database with random sorting
     const query = `
       SELECT *
       FROM projects
@@ -35,6 +39,7 @@ app.post("/projects", async (req, res) => {
     const values = [language, difficulty, count];
     const result = await db.query(query, values);
 
+    // Pass data to the results page
     res.render("results.ejs", {
       language,
       difficulty,
@@ -47,4 +52,5 @@ app.post("/projects", async (req, res) => {
   }
 });
 
+// Export the app for Vercel
 module.exports = app;
