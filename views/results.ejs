@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Project Recommendations</title>
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body>
+    <div class="results-container">
+      <h1>Your Project Recommendations</h1>
+
+      <div class="search-params">
+        <%= count %> <%= difficulty %> projects in <%= language %>
+      </div>
+
+      <div class="projects-grid">
+        <% projects.forEach(project => { %>
+        <div class="project-card">
+          <span class="project-id">#<%= project.id %></span>
+          <div class="project-name"><%= project.name %></div>
+        </div>
+        <% }); %>
+      </div>
+
+      <a href="/" class="back-link">← Back to Search</a>
+    </div>
+  </body>
+</html>
