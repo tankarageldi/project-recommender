@@ -1,12 +1,12 @@
-import express from "express";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-import { Pool } from "pg";
+const express = require("express");
+const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+const pg = require("pg");
 
 dotenv.config();
 
 const app = express();
-const db = new Pool({
+const db = new pg.Pool({
   user: process.env.user,
   host: process.env.host,
   database: process.env.name,
