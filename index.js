@@ -1,20 +1,18 @@
 import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import pg from "pg";
+import { Pool } from "pg";
 
 dotenv.config();
 
 const app = express();
-const port = 3000;
-const db = new pg.Client({
+const db = new Pool({
   user: process.env.user,
   host: process.env.host,
   database: process.env.name,
   password: process.env.password,
   port: process.env.port,
 });
-db.connect();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -27,7 +25,6 @@ app.post("/projects", async (req, res) => {
   try {
     const { language, difficulty, count } = req.body;
 
-    // Query the database with random sorting
     const query = `
       SELECT *
       FROM projects
@@ -38,7 +35,6 @@ app.post("/projects", async (req, res) => {
     const values = [language, difficulty, count];
     const result = await db.query(query, values);
 
-    // Pass data to the results page
     res.render("results.ejs", {
       language,
       difficulty,
@@ -49,10 +45,6 @@ app.post("/projects", async (req, res) => {
     console.error("Error fetching projects:", error);
     res.status(500).send("Server Error");
   }
-});
-
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
 });
 
 module.exports = app;
